@@ -3,8 +3,9 @@ import './globals.css';
 import { Providers } from './providers';
 
 export const metadata: Metadata = {
-  title: 'Email Inbox — Domain Sendiri',
-  description: 'Dashboard monitoring email masuk untuk domain pribadi',
+  title: 'DAPmail — Email Sementara Gratis',
+  description: 'Buat email sementara instan dengan domain sendiri. Tidak perlu registrasi.',
+  icons: { icon: '/logo.png' },
 };
 
 export default function RootLayout({

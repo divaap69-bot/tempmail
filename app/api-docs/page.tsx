@@ -298,7 +298,7 @@ await fetch(\`${base}/api/emails/clear?email=\${email}\`, { method: 'DELETE' });
       </main>
 
       <footer className="text-center py-8 text-xs text-gray-600 border-t border-white/5 mt-10">
-        API Email Sementara · Tidak ada registrasi · Gratis
+        API Email Sementara · DAPmail · Tidak ada registrasi · Gratis
       </footer>
     </div>
   );

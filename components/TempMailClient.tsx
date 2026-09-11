@@ -159,8 +159,9 @@ export function TempMailClient({ domains, initialEmail }: TempMailClientProps) {
       {/* Header */}
       <header className="border-b border-white/10 px-4 py-4 flex items-center justify-between max-w-4xl mx-auto w-full">
         <div className="flex items-center gap-2">
-          <span className="text-2xl">✉️</span>
-          <span className="font-bold text-lg tracking-tight">TempMail</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.png" alt="DAPmail logo" className="h-8 w-auto" />
+          <span className="font-bold text-lg tracking-tight">DAPmail</span>
         </div>
         <div className="flex items-center gap-4">
           <a href="/api-docs" className="text-xs text-gray-400 hover:text-white transition-colors">📡 API</a>
