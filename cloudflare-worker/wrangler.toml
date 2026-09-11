@@ -1,0 +1,12 @@
+name = "email-inbox-worker"
+main = "index.js"
+compatibility_date = "2024-01-01"
+
+# Environment variables — ganti dengan nilai asli kamu
+[vars]
+WEBHOOK_URL = "https://website-kamu.com/api/webhook"
+WEBHOOK_SECRET = "ganti-dengan-secret-yang-sama-di-.env.local"
+
+# Uncomment ini kalau mau pakai secrets (lebih aman):
+# wrangler secret put WEBHOOK_URL
+# wrangler secret put WEBHOOK_SECRET
