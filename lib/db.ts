@@ -173,3 +173,17 @@ export async function getStats(): Promise<{ total: number; unread: number }> {
   ).get({}) as { total: number; unread: number };
   return { total: Number(row?.total ?? 0), unread: Number(row?.unread ?? 0) };
 }
+
+/**
+ * Hapus semua email yang lebih lama dari `hours` jam (default: 24 jam).
+ * Dipanggil otomatis saat webhook menerima email baru, atau via /api/cleanup.
+ */
+export async function deleteOldEmails(hours = 24): Promise<number> {
+  const db = await getDb();
+  const cutoff = new Date(Date.now() - hours * 60 * 60 * 1000).toISOString();
+  const result = db.prepare(
+    `DELETE FROM emails WHERE received_at < :cutoff`
+  ).run({ ':cutoff': cutoff });
+  return result?.changes ?? 0;
+}
+

@@ -5,6 +5,7 @@ import { EmailListItem } from '@/lib/db';
 
 interface TempMailClientProps {
   domains: string[];
+  initialEmail?: string;
 }
 
 function randomUsername(length = 8) {
@@ -23,7 +24,7 @@ function timeAgo(dateStr: string) {
   return `${Math.floor(h / 24)}h lalu`;
 }
 
-export function TempMailClient({ domains }: TempMailClientProps) {
+export function TempMailClient({ domains, initialEmail }: TempMailClientProps) {
   const [username, setUsername] = useState('');
   const [domain, setDomain] = useState(domains[0] || '');
   const [domainOpen, setDomainOpen] = useState(false);
@@ -50,6 +51,19 @@ export function TempMailClient({ domains }: TempMailClientProps) {
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
+
+  // Pre-load inbox from URL (initialEmail prop)
+  useEffect(() => {
+    if (initialEmail) {
+      const [u, d] = initialEmail.split('@');
+      setUsername(u);
+      if (domains.includes(d)) setDomain(d);
+      setActiveEmail(initialEmail);
+      setPage(1);
+      fetchInbox(initialEmail, 1);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialEmail]);
 
   const fetchInbox = useCallback(async (address: string, pg = 1) => {
     if (!address) return;
@@ -85,6 +99,8 @@ export function TempMailClient({ domains }: TempMailClientProps) {
     setEmailBody(null);
     setPage(1);
     fetchInbox(addr, 1);
+    // Update URL supaya bisa dishare
+    window.history.pushState(null, '', `/${encodeURIComponent(addr)}`);
   }
 
   function handleSearch() {
@@ -98,7 +114,10 @@ export function TempMailClient({ domains }: TempMailClientProps) {
     setEmailBody(null);
     setPage(1);
     fetchInbox(addr, 1);
+    // Update URL
+    window.history.pushState(null, '', `/${encodeURIComponent(addr)}`);
   }
+
 
   function handleRefresh() {
     if (activeEmail) fetchInbox(activeEmail, page);

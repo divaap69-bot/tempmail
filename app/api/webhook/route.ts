@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { randomUUID } from 'crypto';
-import { insertEmail } from '@/lib/db';
+import { insertEmail, deleteOldEmails } from '@/lib/db';
 
 export async function POST(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
@@ -51,6 +51,9 @@ export async function POST(request: NextRequest) {
       raw_size: typeof size === 'number' ? size : 0,
       received_at: receivedAt,
     });
+
+    // Auto-cleanup: hapus email lebih dari 24 jam
+    deleteOldEmails(24).catch((e) => console.warn('[webhook] cleanup error:', e));
   } catch (err) {
     console.error('[webhook] DB insert error:', err);
     return NextResponse.json({ error: 'Database error' }, { status: 500 });

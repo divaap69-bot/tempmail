@@ -4,8 +4,8 @@ compatibility_date = "2024-01-01"
 
 # Environment variables — ganti dengan nilai asli kamu
 [vars]
-WEBHOOK_URL = "https://website-kamu.com/api/webhook"
-WEBHOOK_SECRET = "ganti-dengan-secret-yang-sama-di-.env.local"
+WEBHOOK_URL = "https://tempmail-production-07a7.up.railway.app/api/webhook"
+WEBHOOK_SECRET = "a8b0de8eef483e7cd023f6deb7367ccf42b84dc67fb916e028fcdf227cdf0acc"
 
 # Uncomment ini kalau mau pakai secrets (lebih aman):
 # wrangler secret put WEBHOOK_URL
