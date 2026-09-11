@@ -164,8 +164,7 @@ export function TempMailClient({ domains, initialEmail }: TempMailClientProps) {
             <img
               src="/logo.png"
               alt="DAPmail logo"
-              className="w-full h-full object-contain"
-              style={{ transform: 'scale(1.9)', transformOrigin: 'center' }}
+              className="w-full h-full object-contain p-1"
             />
           </div>
           <span className="font-bold text-2xl tracking-tight">DAPmail</span>
