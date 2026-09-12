@@ -355,35 +355,53 @@ export function TempMailClient({ domains, initialEmail }: TempMailClientProps) {
               <p className="text-gray-600 text-xs">Email yang masuk ke <span className="font-mono text-gray-400">{activeEmail}</span> akan muncul di sini</p>
             </div>
           ) : (
-            /* Email list */
             <div className="divide-y divide-white/5">
               {emails.map((email) => (
-                <button
+                <div
                   key={email.id}
-                  onClick={() => openEmail(email)}
-                  className={`w-full text-left px-5 py-4 hover:bg-white/5 transition-colors flex items-start gap-3 ${!email.is_read ? 'bg-white/[0.02]' : ''}`}
+                  className={`group w-full text-left px-5 py-4 hover:bg-white/5 transition-colors flex items-start gap-3 ${!email.is_read ? 'bg-white/[0.02]' : ''}`}
                 >
                   {/* Unread dot */}
-                  <div className="mt-1.5 flex-shrink-0">
-                    {!email.is_read ? (
-                      <div className="w-2 h-2 rounded-full bg-blue-400" />
-                    ) : (
-                      <div className="w-2 h-2 rounded-full bg-transparent" />
-                    )}
+                  <div className="mt-2 flex-shrink-0">
+                    <div className={`w-2 h-2 rounded-full ${!email.is_read ? 'bg-blue-400' : 'bg-transparent'}`} />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-2 mb-0.5">
-                      <span className={`text-sm truncate ${!email.is_read ? 'font-semibold text-white' : 'text-gray-300'}`}>
-                        {email.from_name || email.from_address}
+
+                  {/* Content — clickable area */}
+                  <button
+                    className="flex-1 min-w-0 text-left"
+                    onClick={() => openEmail(email)}
+                  >
+                    {/* Subject (primary) + time */}
+                    <div className="flex items-start justify-between gap-2 mb-0.5">
+                      <span className={`text-sm leading-snug ${!email.is_read ? 'font-semibold text-white' : 'font-medium text-gray-300'}`}>
+                        {email.subject}
                       </span>
-                      <span className="text-xs text-gray-500 flex-shrink-0">{timeAgo(email.received_at)}</span>
+                      <span className="text-xs text-gray-500 flex-shrink-0 mt-0.5">{timeAgo(email.received_at)}</span>
                     </div>
-                    <div className={`text-sm truncate mb-0.5 ${!email.is_read ? 'text-gray-200' : 'text-gray-400'}`}>
-                      {email.subject}
+                    {/* Sender (secondary) */}
+                    <div className="text-xs text-gray-500 truncate mb-1">
+                      {email.from_name ? `${email.from_name} <${email.from_address}>` : email.from_address}
                     </div>
-                    <div className="text-xs text-gray-600 truncate">{email.preview}</div>
-                  </div>
-                </button>
+                    {/* Preview text (clean, no HTML) */}
+                    {email.preview && (
+                      <div className="text-xs text-gray-600 truncate">{email.preview}</div>
+                    )}
+                  </button>
+
+                  {/* Delete button — visible on hover */}
+                  <button
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      await fetch(`/api/email/${email.id}`, { method: 'DELETE' });
+                      setEmails((prev) => prev.filter((em) => em.id !== email.id));
+                      setTotal((t) => Math.max(0, t - 1));
+                    }}
+                    className="opacity-0 group-hover:opacity-100 flex-shrink-0 mt-1 p-1.5 rounded-lg text-gray-600 hover:text-red-400 hover:bg-red-400/10 transition-all"
+                    title="Hapus email ini"
+                  >
+                    🗑
+                  </button>
+                </div>
               ))}
             </div>
           )}

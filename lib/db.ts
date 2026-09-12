@@ -132,14 +132,22 @@ export async function getEmails(
   const countRow = db.prepare(`SELECT COUNT(*) as count FROM emails ${where}`).get(params) as { count: number };
   const total = Number(countRow?.count ?? 0);
 
-  const emails = db.prepare(
+  const rawEmails = db.prepare(
     `SELECT id, from_name, from_address, to_address, subject,
-        COALESCE(SUBSTR(text, 1, 200), SUBSTR(html, 1, 400)) as preview,
+        COALESCE(text, html, '') as preview,
         is_read, received_at
      FROM emails ${where}
      ORDER BY received_at DESC
      LIMIT :limit OFFSET :offset`
-  ).all({ ...params, ':limit': limit, ':offset': offset }) as EmailListItem[];
+  ).all({ ...params, ':limit': limit, ':offset': offset }) as (EmailListItem & { preview: string })[];
+
+  // Strip HTML tags from preview for clean display
+  const emails: EmailListItem[] = rawEmails.map((e) => ({
+    ...e,
+    preview: e.preview
+      ? e.preview.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 200)
+      : '',
+  }));
 
   return { emails, total };
 }
