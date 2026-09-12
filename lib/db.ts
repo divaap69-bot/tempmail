@@ -145,7 +145,17 @@ export async function getEmails(
   const emails: EmailListItem[] = rawEmails.map((e) => ({
     ...e,
     preview: e.preview
-      ? e.preview.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 200)
+      ? e.preview
+          .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')   // hapus blok <style>
+          .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '') // hapus blok <script>
+          .replace(/<[^>]*>/g, ' ')                          // hapus tag HTML
+          .replace(/&nbsp;/gi, ' ')
+          .replace(/&amp;/gi, '&')
+          .replace(/&lt;/gi, '<')
+          .replace(/&gt;/gi, '>')
+          .replace(/\s+/g, ' ')
+          .trim()
+          .slice(0, 200)
       : '',
   }));
 
